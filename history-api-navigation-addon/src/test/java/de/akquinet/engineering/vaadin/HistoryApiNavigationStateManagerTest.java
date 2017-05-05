@@ -1,57 +1,93 @@
 package de.akquinet.engineering.vaadin;
 
-import com.vaadin.navigator.NavigationStateManager;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Registration;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
-/**
- * A {@link NavigationStateManager} using the HTML5 history API to track views and enable listening to view changes.
- * <p>
- * With this class the state won't appear in fragments after a hashbang ("#!"), but as part of the path.
- * For example http://localhost:8080/#!myview/myparameters is replaced by http://localhost:8080/myview/myparameters.
- *
- * @author Axel Meier, akquinet engineering GmbH
- */
-public class HistoryApiNavigationStateManagerTest implements NavigationStateManager
+import java.net.URI;
+
+public class HistoryApiNavigationStateManagerTest
 {
-    private final Page page;
+    @Mock
+    private Page page;
+
+    @Mock
     private Navigator navigator;
+
+    @Mock
     private Registration popStateListenerRegistration;
 
-    public HistoryApiNavigationStateManagerTest(final Page page)
-    {
-        this.page = page;
+    @InjectMocks
+    private HistoryApiNavigationStateManager navigationStateManager;
+
+    @Before
+    public void before(){
+        MockitoAnnotations.initMocks(this);
     }
 
-    @Override
-    public String getState()
+    @Test
+    public void testSetNavigator()
     {
-        final String state = page.getLocation().getPath();
-        if (state != null && state.startsWith("/"))
-        {
-            return state.substring(1);
-        }
-        return "";
+        navigationStateManager.setNavigator(null);
+        Mockito.verifyZeroInteractions(popStateListenerRegistration);
+        Mockito.verifyZeroInteractions(page);
+
+        Mockito.when(page.addPopStateListener(ArgumentMatchers.any(Page.PopStateListener.class)))
+                .thenReturn(popStateListenerRegistration);
+        navigationStateManager.setNavigator(navigator);
+        Mockito.verify(page)
+                .addPopStateListener(ArgumentMatchers.any(Page.PopStateListener.class));
+
+        navigationStateManager.setNavigator(null);
+        Mockito.verify(popStateListenerRegistration).remove();
     }
 
-    @Override
-    public void setState(final String state)
+    @Test
+    public void testSetState()
     {
-        page.pushState("/" + (state != null ? state : ""));
+        navigationStateManager.setState("page");
+        Mockito.verify(page, Mockito.times(1)).pushState("/page");
+
+        navigationStateManager.setState("page/param1/param2");
+        Mockito.verify(page, Mockito.times(1)).pushState("/page/param1/param2");
+
+        navigationStateManager.setState(null);
+        Mockito.verify(page, Mockito.times(1)).pushState("/");
     }
 
-    @Override
-    public void setNavigator(final Navigator navigator)
+    @Test
+    public void testGetState() throws Exception
     {
-        if (this.navigator == null && navigator != null)
         {
-            popStateListenerRegistration = page.addPopStateListener(event -> navigator.navigateTo(getState()));
+            Mockito.when(page.getLocation()).thenReturn(new URI("http://localhost/page/param1/param2"));
+            final String state = navigationStateManager.getState();
+            Assert.assertEquals("page/param1/param2", state);
         }
-        else if (this.navigator != null && navigator == null)
+
         {
-            popStateListenerRegistration.remove();
+            Mockito.when(page.getLocation()).thenReturn(new URI("http://localhost/page/param1/param2/"));
+            final String state = navigationStateManager.getState();
+            Assert.assertEquals("page/param1/param2/", state);
         }
-        this.navigator = navigator;
+
+        {
+            Mockito.when(page.getLocation()).thenReturn(new URI("http://localhost/page/param1?query"));
+            final String state = navigationStateManager.getState();
+            Assert.assertEquals("page/param1", state);
+        }
+
+        {
+            Mockito.when(page.getLocation()).thenReturn(new URI("http://localhost/page"));
+            final String state = navigationStateManager.getState();
+            Assert.assertEquals("page", state);
+        }
     }
 }
