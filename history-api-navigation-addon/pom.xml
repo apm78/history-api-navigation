@@ -5,7 +5,7 @@
     <groupId>de.akquinet.engineering.vaadin</groupId>
     <artifactId>history-api-navigation</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.1</version>
+    <version>0.1.2-SNAPSHOT</version>
     <name>HistoryApiNavigationStateManager Add-on</name>
 
     <prerequisites>
