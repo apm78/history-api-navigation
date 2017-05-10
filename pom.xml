@@ -5,7 +5,7 @@
     <groupId>de.akquinet.engineering.vaadin</groupId>
     <artifactId>history-api-navigation-root</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
     <name>HistoryApiNavigationStateManager Add-on Root Project</name>
 
     <prerequisites>
