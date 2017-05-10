@@ -59,6 +59,12 @@ public class HistoryApiNavigationStateManagerTest
         navigationStateManager.setState("page/param1/param2");
         Mockito.verify(page, Mockito.times(1)).pushState("/page/param1/param2");
 
+        navigationStateManager.setState("/param1");
+        Mockito.verify(page, Mockito.times(1)).pushState("/param1");
+
+        navigationStateManager.setState("/param1/param2");
+        Mockito.verify(page, Mockito.times(1)).pushState("/param1/param2");
+
         navigationStateManager.setState(null);
         Mockito.verify(page, Mockito.times(1)).pushState("/");
     }
