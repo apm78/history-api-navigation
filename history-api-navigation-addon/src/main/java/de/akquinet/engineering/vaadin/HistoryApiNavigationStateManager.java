@@ -38,7 +38,8 @@ public class HistoryApiNavigationStateManager implements NavigationStateManager
     @Override
     public void setState(final String state)
     {
-        page.pushState("/" + (state != null ? state : ""));
+        final String newState = state != null ? state : "";
+        page.pushState(newState.startsWith("/") ? newState : "/" + newState);
     }
 
     @Override

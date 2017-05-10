@@ -12,7 +12,7 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class HomeView implements ComponentView, View
 {
-    public static final String VIEW_NAME = "homeview";
+    public static final String VIEW_NAME = "";
 
     private final VerticalLayout rootLayout = new VerticalLayout();
 

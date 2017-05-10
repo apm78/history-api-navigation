@@ -39,8 +39,6 @@ public class DemoUI extends UI
     {
         setLocale(Locale.US);
 
-        getPage().setTitle("HTML5 History API Navigation Demo");
-
         final HorizontalLayout rootLayout = new HorizontalLayout();
         rootLayout.setSpacing(false);
         rootLayout.setSizeFull();
@@ -84,7 +82,6 @@ public class DemoUI extends UI
         final HomeView homeView = new HomeView();
         getNavigator().addView(HomeView.VIEW_NAME, homeView);
         getNavigator().addView(ParameterView.VIEW_NAME, new ParameterView());
-        getNavigator().setErrorView(homeView);
 
         setContent(rootLayout);
     }
