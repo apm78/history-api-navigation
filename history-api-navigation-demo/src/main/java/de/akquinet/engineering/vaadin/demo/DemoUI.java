@@ -3,7 +3,6 @@ package de.akquinet.engineering.vaadin.demo;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.ContentMode;
@@ -15,7 +14,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import de.akquinet.engineering.vaadin.HistoryApiNavigationStateManager;
+import de.akquinet.engineering.vaadin.HistoryApiNavigatorFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.annotation.WebServlet;
@@ -80,7 +79,7 @@ public class DemoUI extends UI
         rootLayout.addComponent(contentPanel);
         rootLayout.setExpandRatio(contentPanel, 1.0f);
 
-        setNavigator(new Navigator(this, new HistoryApiNavigationStateManager(getPage()), new CustomViewDisplay(contentPanel)));
+        setNavigator(HistoryApiNavigatorFactory.createHistoryApiNavigator(this, new CustomViewDisplay(contentPanel)));
 
         final HomeView homeView = new HomeView();
         getNavigator().addView(HomeView.VIEW_NAME, homeView);

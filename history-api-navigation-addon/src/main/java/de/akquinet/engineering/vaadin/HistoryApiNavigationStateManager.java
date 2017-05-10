@@ -6,7 +6,7 @@ import com.vaadin.server.Page;
 import com.vaadin.shared.Registration;
 
 /**
- * A {@link NavigationStateManager} using the HTML5 history API to track views and enable listening to view changes.
+ * A {@link NavigationStateManager} using the HTML5 History API to track views and enable listening to view changes.
  * <p>
  * With this class the state won't appear in fragments after a hashbang ("#!"), but as part of the path.
  * For example http://localhost:8080/#!myview/myparameters is replaced by http://localhost:8080/myview/myparameters.

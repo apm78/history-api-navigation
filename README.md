@@ -17,7 +17,7 @@ To see the demo, navigate to http://localhost:8080/
 
 ## Release notes
 
-### Version 1.0-SNAPSHOT
+### Version 0.1.0
 - Initial version
 - The HistoryApiNavigationStateManager can be used with the Navigator.
 
