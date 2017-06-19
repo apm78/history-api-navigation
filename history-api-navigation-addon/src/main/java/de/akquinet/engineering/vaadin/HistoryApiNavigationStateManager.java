@@ -16,30 +16,37 @@ import com.vaadin.shared.Registration;
 public class HistoryApiNavigationStateManager implements NavigationStateManager
 {
     private final Page page;
+    private final String contextPath;
     private Navigator navigator;
     private Registration popStateListenerRegistration;
 
-    public HistoryApiNavigationStateManager(final Page page)
+    public HistoryApiNavigationStateManager(final Page page, final String contextPath)
     {
         this.page = page;
+        this.contextPath = contextPath == null || contextPath.isEmpty() ? "/" : contextPath;
     }
 
     @Override
     public String getState()
     {
-        final String state = page.getLocation().getPath();
-        if (state != null && state.startsWith("/"))
-        {
-            return state.substring(1);
+        String state = page.getLocation().getPath();
+
+        if (state == null) {
+            state ="/";
         }
-        return "";
+
+        return state.substring(contextPath.length());
     }
 
     @Override
     public void setState(final String state)
     {
         final String newState = state != null ? state : "";
-        page.pushState(newState.startsWith("/") ? newState : "/" + newState);
+        pushState(newState.startsWith("/") ? newState.substring(1) : newState);
+    }
+
+    private void pushState(final String state) {
+        page.pushState(contextPath + state);
     }
 
     @Override
