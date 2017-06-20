@@ -4,6 +4,7 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.server.Page;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.SingleComponentContainer;
@@ -66,7 +67,9 @@ public final class HistoryApiNavigatorFactory
      *            with the active view on view change
      */
     public static Navigator createHistoryApiNavigator(final UI ui, final SingleComponentContainer container){
-        return createHistoryApiNavigator(ui, new Navigator.SingleComponentContainerViewDisplay(container));
+        return createHistoryApiNavigator(
+            ui,
+            new Navigator.SingleComponentContainerViewDisplay(container));
     }
 
     /**
@@ -85,6 +88,11 @@ public final class HistoryApiNavigatorFactory
      *            The ViewDisplay used to display the views.
      */
     public static Navigator createHistoryApiNavigator(final UI ui, final ViewDisplay display){
-        return new Navigator(ui, new HistoryApiNavigationStateManager(ui.getPage()), display);
+        return new Navigator(
+            ui,
+            new HistoryApiNavigationStateManager(
+                ui.getPage(),
+                VaadinService.getCurrentRequest().getContextPath()),
+            display);
     }
 }
