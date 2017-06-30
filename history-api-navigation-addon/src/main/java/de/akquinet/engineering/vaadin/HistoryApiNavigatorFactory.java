@@ -4,7 +4,9 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.server.Page;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinServletRequest;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.SingleComponentContainer;
@@ -92,7 +94,17 @@ public final class HistoryApiNavigatorFactory
             ui,
             new HistoryApiNavigationStateManager(
                 ui.getPage(),
-                VaadinService.getCurrentRequest().getContextPath()),
+                    contextPath()),
             display);
+    }
+
+    private static String contextPath(){
+        final VaadinRequest request = VaadinService.getCurrentRequest();
+        final String contextPath = request.getContextPath();
+        if (request instanceof VaadinServletRequest){
+            final VaadinServletRequest servletRequest = (VaadinServletRequest) request;
+            return contextPath + servletRequest.getHttpServletRequest().getServletPath();
+        }
+        return contextPath;
     }
 }

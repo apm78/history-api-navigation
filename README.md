@@ -17,9 +17,9 @@ To see the demo, navigate to http://localhost:8080/
 
 ## Release notes
 
-### Version 0.1.0
-- Initial version
-- The HistoryApiNavigationStateManager can be used with the Navigator.
+### Version 0.1.2
+- Fixed problems with different context paths
+- Updated Vaadin dependency to 8.0.6
 
 ## Issue tracking
 

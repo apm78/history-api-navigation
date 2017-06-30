@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 public class DemoUI extends UI
 {
 
-    @WebServlet(value = "/*", asyncSupported = true)
+    @WebServlet(value = {"/demo/*", "/VAADIN/*"}, asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = DemoUI.class)
     public static class Servlet extends VaadinServlet
     {

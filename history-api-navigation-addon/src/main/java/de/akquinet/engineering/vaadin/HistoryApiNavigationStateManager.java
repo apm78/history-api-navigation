@@ -4,6 +4,7 @@ import com.vaadin.navigator.NavigationStateManager;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Registration;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A {@link NavigationStateManager} using the HTML5 History API to track views and enable listening to view changes.
@@ -15,6 +16,8 @@ import com.vaadin.shared.Registration;
  */
 public class HistoryApiNavigationStateManager implements NavigationStateManager
 {
+    private static final String SEPARATOR = "/";
+
     private final Page page;
     private final String contextPath;
     private Navigator navigator;
@@ -23,30 +26,42 @@ public class HistoryApiNavigationStateManager implements NavigationStateManager
     public HistoryApiNavigationStateManager(final Page page, final String contextPath)
     {
         this.page = page;
-        this.contextPath = contextPath == null || contextPath.isEmpty() ? "/" : contextPath;
+        this.contextPath = StringUtils.isEmpty(contextPath) ? SEPARATOR : contextPath;
     }
 
     @Override
     public String getState()
     {
-        String state = page.getLocation().getPath();
+        return pathToState(page.getLocation().getPath());
+    }
 
-        if (state == null) {
-            state ="/";
+    private String pathToState(final String path){
+        if (path == null) {
+            return "";
         }
 
-        return state.substring(contextPath.length());
+        final String state = path.substring(contextPath.length());
+        if (state.startsWith(SEPARATOR))
+        {
+            return state.substring(1);
+        }
+
+        return state;
+    }
+
+    static String stateToPath(final String contextPath, final String state)
+    {
+        final String newState = state != null ? state : "";
+        final String path = newState.startsWith(SEPARATOR) ? newState.substring(1) : newState;
+        return contextPath.endsWith(SEPARATOR)
+               ? contextPath + path
+               : contextPath + SEPARATOR + path;
     }
 
     @Override
     public void setState(final String state)
     {
-        final String newState = state != null ? state : "";
-        pushState(newState.startsWith("/") ? newState.substring(1) : newState);
-    }
-
-    private void pushState(final String state) {
-        page.pushState(contextPath + state);
+        page.pushState(stateToPath(contextPath, state));
     }
 
     @Override
