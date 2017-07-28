@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 public class DemoUI extends UI
 {
 
-    @WebServlet(value = {"/demo/*", "/VAADIN/*"}, asyncSupported = true)
+    @WebServlet(value = { "/demo/*", "/VAADIN/*" }, asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = DemoUI.class)
     public static class Servlet extends VaadinServlet
     {
@@ -54,22 +54,14 @@ public class DemoUI extends UI
         final TextField param1Field = new TextField("Parameter 1");
         final TextField param2Field = new TextField("Parameter 2");
 
-        final Button homeButton = new Button("Home View", event -> {
-            final String parameters = Stream.of(param1Field.getValue(), param2Field.getValue())
-                    .filter(StringUtils::isNotBlank)
-                    .collect(Collectors.joining("/"));
-            getNavigator().navigateTo(HomeView.VIEW_NAME + "/" + parameters);
-        });
+        final Button homeButton = new Button("Home View",
+                event -> getNavigator().navigateTo(HomeView.VIEW_NAME + "/" +
+                        getParameters(param1Field.getValue(), param2Field.getValue())));
         navigationLayout.addComponent(homeButton);
 
-        final Button parameterButton = new Button("Parameter View",
-                event ->
-                {
-                    final String parameters = Stream.of(param1Field.getValue(), param2Field.getValue())
-                            .filter(StringUtils::isNotBlank)
-                            .collect(Collectors.joining("/"));
-                    getNavigator().navigateTo(ParameterView.VIEW_NAME + "/" + parameters);
-                });
+        final Button parameterButton = new Button("Other View",
+                event -> getNavigator().navigateTo(OtherView.VIEW_NAME + "/" +
+                        getParameters(param1Field.getValue(), param2Field.getValue())));
         navigationLayout.addComponents(parameterButton, param1Field, param2Field);
 
         final Panel contentPanel = new Panel();
@@ -78,12 +70,18 @@ public class DemoUI extends UI
         rootLayout.setExpandRatio(contentPanel, 1.0f);
 
         setNavigator(HistoryApiNavigatorFactory.createHistoryApiNavigator(this, new CustomViewDisplay(contentPanel)));
-//        setNavigator(new Navigator(this, new CustomViewDisplay(contentPanel)));
 
         final HomeView homeView = new HomeView();
         getNavigator().addView(HomeView.VIEW_NAME, homeView);
-        getNavigator().addView(ParameterView.VIEW_NAME, new ParameterView());
+        getNavigator().addView(OtherView.VIEW_NAME, new OtherView());
 
         setContent(rootLayout);
+    }
+
+    private static String getParameters(final String param1, final String param2)
+    {
+        return Stream.of(param1, param2)
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining("/"));
     }
 }

@@ -10,19 +10,18 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * @author Axel Meier, akquinet engineering GmbH
  */
-public class ParameterView implements ComponentView, View
+public class OtherView implements ComponentView, View
 {
-    public static final String VIEW_NAME = "parameterview";
+    public static final String VIEW_NAME = "otherview";
 
     private final VerticalLayout rootLayout = new VerticalLayout();
     private final Label label = new Label();
 
-    public ParameterView()
+    public OtherView()
     {
-        final Label title = new Label("Parameter View");
+        final Label title = new Label("Other View");
         title.setStyleName(ValoTheme.LABEL_H2);
         rootLayout.addComponent(title);
-
         rootLayout.addComponent(label);
     }
 
