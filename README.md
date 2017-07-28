@@ -29,7 +29,7 @@ To see the demo, navigate to http://localhost:8080/demo
 
 ## Release notes
 
-### Version 0.1.3
+### Version 0.2.0
 - Improved state to path conversion
 - Updated Vaadin dependency to 8.1.0
 
