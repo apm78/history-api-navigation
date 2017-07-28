@@ -5,7 +5,7 @@
     <groupId>de.akquinet.engineering.vaadin</groupId>
     <artifactId>history-api-navigation-demo</artifactId>
     <packaging>war</packaging>
-    <version>0.2.1</version>
+    <version>0.2.2-SNAPSHOT</version>
     <name>HistoryApiNavigationStateManager Add-on Demo</name>
 
     <prerequisites>
