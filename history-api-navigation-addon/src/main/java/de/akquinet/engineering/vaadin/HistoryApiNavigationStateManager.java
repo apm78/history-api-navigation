@@ -26,7 +26,7 @@ public class HistoryApiNavigationStateManager implements NavigationStateManager
     public HistoryApiNavigationStateManager(final Page page, final String contextPath)
     {
         this.page = page;
-        this.contextPath = StringUtils.isEmpty(contextPath) ? SEPARATOR : contextPath;
+        this.contextPath = StringUtils.defaultString(contextPath, "");
     }
 
     @Override
@@ -40,22 +40,24 @@ public class HistoryApiNavigationStateManager implements NavigationStateManager
             return "";
         }
 
-        final String state = path.substring(contextPath.length());
-        if (state.startsWith(SEPARATOR))
+        final String preState = path.substring(contextPath.length());
+        if (preState.startsWith(SEPARATOR))
         {
-            return state.substring(1);
+            return preState.substring(1);
         }
 
-        return state;
+        return "";
     }
 
     static String stateToPath(final String contextPath, final String state)
     {
-        final String newState = state != null ? state : "";
-        final String path = newState.startsWith(SEPARATOR) ? newState.substring(1) : newState;
-        return contextPath.endsWith(SEPARATOR)
-               ? contextPath + path
-               : contextPath + SEPARATOR + path;
+        final String path = contextPath + SEPARATOR + state;
+        return sanitizePath(path);
+    }
+
+    private static String sanitizePath(final String path){
+        // prevent double slashes, because that causes errors in pushState()
+        return SEPARATOR + StringUtils.stripStart(path, SEPARATOR);
     }
 
     @Override

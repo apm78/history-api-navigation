@@ -66,7 +66,7 @@ public class HistoryApiNavigationStateManagerTest
     {
         // context path is '/'
         {
-            setField(navigationStateManager, "contextPath", "/");
+            setField(navigationStateManager, "contextPath", "");
 
             navigationStateManager.setState("page");
             Mockito.verify(page, Mockito.times(1)).pushState("/page");
@@ -80,7 +80,7 @@ public class HistoryApiNavigationStateManagerTest
             navigationStateManager.setState("/param1/param2");
             Mockito.verify(page, Mockito.times(1)).pushState("/param1/param2");
 
-            navigationStateManager.setState(null);
+            navigationStateManager.setState("");
             Mockito.verify(page, Mockito.times(1)).pushState("/");
         }
 
@@ -95,33 +95,42 @@ public class HistoryApiNavigationStateManagerTest
             Mockito.verify(page, Mockito.times(1)).pushState("/context-path/page/param1/param2");
 
             navigationStateManager.setState("/param1");
-            Mockito.verify(page, Mockito.times(1)).pushState("/context-path/param1");
+            Mockito.verify(page, Mockito.times(1)).pushState("/context-path//param1");
 
             navigationStateManager.setState("/param1/param2");
-            Mockito.verify(page, Mockito.times(1)).pushState("/context-path/param1/param2");
+            Mockito.verify(page, Mockito.times(1)).pushState("/context-path//param1/param2");
 
-            navigationStateManager.setState(null);
+            navigationStateManager.setState("");
             Mockito.verify(page, Mockito.times(1)).pushState("/context-path/");
+
+            navigationStateManager.setState("/");
+            Mockito.verify(page, Mockito.times(1)).pushState("/context-path//");
         }
     }
 
     @Test
     public void testStateToPath()
     {
-        Assert.assertEquals("/context-path/page/param1", HistoryApiNavigationStateManager
-                .stateToPath("/context-path/", "page/param1"));
-
-        Assert.assertEquals("/context-path/page/param1", HistoryApiNavigationStateManager
-                .stateToPath("/context-path/", "/page/param1"));
+        Assert.assertEquals("/context-path/page", HistoryApiNavigationStateManager
+                .stateToPath("/context-path", "page"));
 
         Assert.assertEquals("/context-path/page/param1", HistoryApiNavigationStateManager
                 .stateToPath("/context-path", "page/param1"));
 
-        Assert.assertEquals("/context-path/page", HistoryApiNavigationStateManager
-                .stateToPath("/context-path/", "/page"));
+        Assert.assertEquals("/context-path/page/param1/param2", HistoryApiNavigationStateManager
+                .stateToPath("/context-path", "page/param1/param2"));
+
+        Assert.assertEquals("/context-path//param1", HistoryApiNavigationStateManager
+                .stateToPath("/context-path", "/param1"));
 
         Assert.assertEquals("/page", HistoryApiNavigationStateManager
-                .stateToPath("/", "page"));
+                .stateToPath("", "page"));
+
+        Assert.assertEquals("/page/param1", HistoryApiNavigationStateManager
+            .stateToPath("", "page/param1"));
+
+        Assert.assertEquals("/param1", HistoryApiNavigationStateManager
+                .stateToPath("", "/param1"));
     }
 
     @Test
@@ -129,26 +138,22 @@ public class HistoryApiNavigationStateManagerTest
     {
         {
             Mockito.when(page.getLocation()).thenReturn(new URI("http://localhost/context-path/page/param1/param2"));
-            final String state = navigationStateManager.getState();
-            Assert.assertEquals("page/param1/param2", state);
+            Assert.assertEquals("page/param1/param2", navigationStateManager.getState());
         }
 
         {
             Mockito.when(page.getLocation()).thenReturn(new URI("http://localhost/context-path/page/param1/param2/"));
-            final String state = navigationStateManager.getState();
-            Assert.assertEquals("page/param1/param2/", state);
+            Assert.assertEquals("page/param1/param2/", navigationStateManager.getState());
         }
 
         {
             Mockito.when(page.getLocation()).thenReturn(new URI("http://localhost/context-path/page/param1?query"));
-            final String state = navigationStateManager.getState();
-            Assert.assertEquals("page/param1", state);
+            Assert.assertEquals("page/param1", navigationStateManager.getState());
         }
 
         {
             Mockito.when(page.getLocation()).thenReturn(new URI("http://localhost/context-path/page"));
-            final String state = navigationStateManager.getState();
-            Assert.assertEquals("page", state);
+            Assert.assertEquals("page", navigationStateManager.getState());
         }
     }
 }

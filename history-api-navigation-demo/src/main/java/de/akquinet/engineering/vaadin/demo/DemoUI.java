@@ -51,24 +51,24 @@ public class DemoUI extends UI
         navigationLayout.addComponent(title);
         rootLayout.addComponent(navigationLayout);
 
-        final Button homeButton = new Button("Home View", event -> getNavigator().navigateTo(HomeView.VIEW_NAME));
-        navigationLayout.addComponent(homeButton);
-
         final TextField param1Field = new TextField("Parameter 1");
         final TextField param2Field = new TextField("Parameter 2");
+
+        final Button homeButton = new Button("Home View", event -> {
+            final String parameters = Stream.of(param1Field.getValue(), param2Field.getValue())
+                    .filter(StringUtils::isNotBlank)
+                    .collect(Collectors.joining("/"));
+            getNavigator().navigateTo(HomeView.VIEW_NAME + "/" + parameters);
+        });
+        navigationLayout.addComponent(homeButton);
+
         final Button parameterButton = new Button("Parameter View",
                 event ->
                 {
                     final String parameters = Stream.of(param1Field.getValue(), param2Field.getValue())
                             .filter(StringUtils::isNotBlank)
                             .collect(Collectors.joining("/"));
-                    if (StringUtils.isBlank(parameters)){
-                        getNavigator().navigateTo(ParameterView.VIEW_NAME);
-                    }
-                    else
-                    {
-                        getNavigator().navigateTo(ParameterView.VIEW_NAME + "/" + parameters);
-                    }
+                    getNavigator().navigateTo(ParameterView.VIEW_NAME + "/" + parameters);
                 });
         navigationLayout.addComponents(parameterButton, param1Field, param2Field);
 
@@ -78,6 +78,7 @@ public class DemoUI extends UI
         rootLayout.setExpandRatio(contentPanel, 1.0f);
 
         setNavigator(HistoryApiNavigatorFactory.createHistoryApiNavigator(this, new CustomViewDisplay(contentPanel)));
+//        setNavigator(new Navigator(this, new CustomViewDisplay(contentPanel)));
 
         final HomeView homeView = new HomeView();
         getNavigator().addView(HomeView.VIEW_NAME, homeView);
