@@ -12,7 +12,7 @@ To make use of the add-on's functionality you use the HistoryApiNavigationStateM
 
     http://localhost:8080/demo/viewname/parameter
     
-There is one little issue you have to have to mind. When you use empty context roots and an empty view name you cannot have parameters for that view. `http://localhost:8080//parameter` cannot be pushed because of the double slashes (try `window.history.pushState({}, "", "//param");` in your browser console to see what I mean) and `http://localhost:8080/parameter` is handled as if `parameter` is a view name.    
+There is one little issue you have to have in mind. When you use empty context roots and an empty view name you cannot have parameters for that view. `http://localhost:8080//parameter` cannot be pushed because of the double slashes (try `window.history.pushState({}, "", "//param");` in your browser console to see what I mean) and `http://localhost:8080/parameter` is handled as if `parameter` is a view name.    
 
 ## Download release
 
